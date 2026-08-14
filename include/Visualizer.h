@@ -30,7 +30,11 @@ inline void draw_dot(const shared_ptr<Value>& root, const string& filename = "gr
     for (const auto& n : nodes) {
         uintptr_t id = reinterpret_cast<uintptr_t>(n.get());
         
-        out << "    node_" << id << " [label=\"data " << n->data << "\", shape=box];\n";
+        out << "    node_" << id << " [label=\"";
+        if (!n->label.empty()) {
+            out << n->label << " | ";
+        }
+        out << "data " << n->data << "\", shape=record];\n";
 
         if (n->op != ' ') {
             out << "    op_" << id << " [label=\"" << n->op << "\", shape=circle];\n";
