@@ -32,8 +32,8 @@ inline shared_ptr<Value> operator+(shared_ptr<Value> a, shared_ptr<Value> b) {
      auto y = make_shared<Value>(a->data + b->data, children, '+');
      Value* y_ptr = y.get();
      auto f = [a,b,y_ptr](){
-      a->grad=y_ptr->grad;
-      b->grad= y_ptr->grad;
+      a->grad+=y_ptr->grad;
+      b->grad+= y_ptr->grad;
     };
    y->backward=f;
     return y;
@@ -44,8 +44,8 @@ inline shared_ptr<Value> operator*(shared_ptr<Value> a, shared_ptr<Value> b) {
     auto y = make_shared<Value>(a->data * b->data, children, '*');
     Value* y_ptr = y.get();
     auto f = [a,b,y_ptr](){
-      a->grad=y_ptr->grad * b->data;
-      b->grad= y_ptr->grad* a->data;
+      a->grad+=y_ptr->grad * b->data;
+      b->grad+= y_ptr->grad* a->data;
     };
    y->backward=f;
    return y;
@@ -57,7 +57,7 @@ inline shared_ptr<Value> tanh(shared_ptr<Value> x){
     auto out =  make_shared<Value>(y, children, 't');
     Value* out_ptr = out.get();
     auto f = [y,x,out_ptr](){
-      x->grad=(1-y*y)*out_ptr->grad;
+      x->grad+=(1-y*y)*out_ptr->grad;
     };
     out->backward=f;
     return out;
@@ -70,7 +70,7 @@ inline shared_ptr<Value> relu(shared_ptr<Value> x) {
     Value* out_ptr = out.get();
     
     auto f = [x, out_ptr]() {
-        x->grad = (out_ptr->data > 0.0 ? 1.0 : 0.0) * out_ptr->grad;
+        x->grad += (out_ptr->data > 0.0 ? 1.0 : 0.0) * out_ptr->grad;
     };
     
     out->backward = f;
