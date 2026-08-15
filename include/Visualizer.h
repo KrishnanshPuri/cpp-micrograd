@@ -34,12 +34,14 @@ inline void draw_dot(const shared_ptr<Value>& root, const string& filename = "gr
         if (!n->label.empty()) {
             out << n->label << " | ";
         }
-        out << "data " << n->data << "\", shape=record];\n";
+
+        out << "{ data " << n->data << " | grad " << n->grad << " }\", shape=record];\n";
 
         if (n->op != ' ') {
             out << "    op_" << id << " [label=\"" << n->op << "\", shape=circle];\n";
             out << "    op_" << id << " -> node_" << id << ";\n";
         }
+
     }
 
     for (const auto& edge : edges) {
@@ -51,6 +53,8 @@ inline void draw_dot(const shared_ptr<Value>& root, const string& filename = "gr
         } else {
             out << "    node_" << child_id << " -> node_" << parent_id << ";\n";
         }
+
+        
     }
 
     out << "}\n";

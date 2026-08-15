@@ -3,19 +3,25 @@
 #include <cstdlib> 
 
 int main() {
-    auto a = make_shared<Value>(-3.0,"a");
-    auto b = make_shared<Value>(2.0,"b");
-    auto c = make_shared<Value>(10.0,"c");
+   auto x1 = make_shared<Value>(2.0,"x1");
+   auto x2 = make_shared<Value>(0.0,"x2");
 
-    auto e = a * b;
-    e->label = "e";
+   auto w1 = make_shared<Value>(-3.0,"w1");
+   auto w2 =make_shared<Value>(-1.0,"w2");
 
-    auto d = e + c;
-    d->label = "d";
+   auto b = make_shared<Value>(6.7,"b");
 
-    draw_dot(d, "graph.dot");
-    
-   
+   auto x1_w1 = x1*w1; x1_w1->label="x1*w1";
+   auto x2_w2 = x2*w2; x2_w2->label="x2*w2";
+
+   auto x1_w1_x2_w2 = x1_w1 + x2_w2 ;x1_w1_x2_w2->label="x1*w1+x2*w2";
+
+    auto n = x1_w1_x2_w2 + b; n->label="n";
+
+    auto out = tanh(n); out->label="out";
+
+
+    draw_dot(out, "graph.dot");
     system("dot -Tpng graph.dot -o graph.png");
     system("open graph.png");
     
