@@ -36,7 +36,7 @@ int main() {
 
         vector<shared_ptr<Value>> topo;
         unordered_set<shared_ptr<Value>> vis;
-         
+        
         function<void(shared_ptr<Value>)> toposort;
         toposort = [&](shared_ptr<Value> node) {
             if (!node || vis.count(node)) return;
@@ -49,7 +49,7 @@ int main() {
 
         toposort(loss);
         
-       loss->grad = 1.0;
+        loss->grad = 1.0;
         
         for (auto it = topo.rbegin(); it != topo.rend(); ++it) {
             (*it)->backward();

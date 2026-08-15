@@ -13,11 +13,12 @@ class Neuron{
     public:
     vector<shared_ptr<Value>> weights;
     shared_ptr<Value> bias;
-    Neuron(int nin){
+    Neuron(int nin,int layer_idx, int neuron_idx){
+        string prefix = "L" + to_string(layer_idx) + "_N" + to_string(neuron_idx) + "_";
         for(int i=0;i<nin;i++){
-            weights.push_back(make_shared<Value>(random_weight(),"w"+to_string(i)));
+            weights.push_back(make_shared<Value>(random_weight(),prefix + "w"+to_string(i)));
         }
-        bias = make_shared<Value>(random_weight(),"b");
+        bias = make_shared<Value>(random_weight(),prefix + "b");
     }
 
     shared_ptr<Value> operator()(vector<shared_ptr<Value>>x){
@@ -36,14 +37,12 @@ class Neuron{
 };
 
 class Layer {
-
-
 public:
     vector<Neuron> neurons;
 
-    Layer(int nin, int nout) {
+    Layer(int nin, int nout,int layer_idx) {
         for (int i = 0; i < nout; ++i) {
-            neurons.push_back(Neuron(nin));
+            neurons.push_back(Neuron(nin,layer_idx,i));
         }
     }
 
@@ -72,7 +71,7 @@ class MLP{
     MLP(int nin,vector<int>nouts){
         int sz = nin;
         for(int i=0;i<nouts.size();i++){
-            layers.push_back(Layer(sz,nouts[i]));
+            layers.push_back(Layer(sz,nouts[i],i));
             sz = nouts[i];
         }
     }
