@@ -54,11 +54,25 @@ inline shared_ptr<Value> operator*(shared_ptr<Value> a, shared_ptr<Value> b) {
 inline shared_ptr<Value> tanh(shared_ptr<Value> x){
     double y = tanh(x->data);
     unordered_set<shared_ptr<Value>> children = {x};
-    return make_shared<Value>(y, children, 't');
+    auto out =  make_shared<Value>(y, children, 't');
+    Value* out_ptr = out.get();
+    auto f = [y,x,out_ptr](){
+      x->grad=(1-y*y)*out_ptr->grad;
+    };
+    out->backward=f;
+    return out;
 }
 
 inline shared_ptr<Value> relu(shared_ptr<Value> x) {
-    double out = max(0.0, x->data);
+    double y = max(0.0, x->data);
     unordered_set<shared_ptr<Value>> children = {x};
-    return make_shared<Value>(out, children, 'r');
+    auto out = make_shared<Value>(y, children, 'r');
+    Value* out_ptr = out.get();
+    
+    auto f = [x, out_ptr]() {
+        x->grad = (out_ptr->data > 0.0 ? 1.0 : 0.0) * out_ptr->grad;
+    };
+    
+    out->backward = f;
+    return out;
 }
