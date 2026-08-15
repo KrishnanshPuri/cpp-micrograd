@@ -36,6 +36,8 @@ class Neuron{
 };
 
 class Layer {
+
+
 public:
     vector<Neuron> neurons;
 
@@ -63,3 +65,38 @@ public:
         return params;
     }
 };
+
+class MLP{
+    public:
+    vector<Layer>layers;
+    MLP(int nin,vector<int>nouts){
+        int sz = nin;
+        for(int i=0;i<nouts.size();i++){
+            layers.push_back(Layer(sz,nouts[i]));
+            sz = nouts[i];
+        }
+    }
+
+    vector<shared_ptr<Value>> operator()(vector<shared_ptr<Value>> x) {
+        for (auto& layer : layers) {
+            x = layer(x); 
+        }
+        return x;
+        }
+
+
+vector<shared_ptr<Value>> parameters() {
+        vector<shared_ptr<Value>> params;
+        for (auto& layer : layers) {
+            auto l_params = layer.parameters();
+            params.insert(params.end(), l_params.begin(), l_params.end());
+        }
+        return params;
+    }
+
+
+};
+
+
+
+
